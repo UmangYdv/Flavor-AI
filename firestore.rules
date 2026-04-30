@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields: uid, email, displayName, photoURL, role
+    //
+    // Collection: users/{userId}/recipes
+    // Fields: id, title, description, ingredients, instructions, prepTime, calories, macros, mealType, isVeg, imageUrl, uid, createdAt
+    //
+    // Collection: users/{userId}/pantry
+    // Fields: id, name, quantity, category, expiryDate, uid
+    //
+    // Collection: users/{userId}/mealPlan
+    // Fields: id, recipeId, recipeTitle, date, mealType, uid
+    //
+    // Collection: users/{userId}/shoppingList
+    // Fields: id, name, amount, isBought, uid
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid == request.auth.uid &&
+             data.email is string && isValidEmail(data.email);
+    }
+
+    function isValidRecipe(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.uid is string && data.uid == request.auth.uid;
+    }
+
+    function isValidPantryItem(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.uid is string && data.uid == request.auth.uid;
+    }
+
+    function isValidMealPlan(data) {
+      return data.date is string && data.mealType is string &&
+             data.uid is string && data.uid == request.auth.uid;
+    }
+
+    function isValidShoppingItem(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.uid is string && data.uid == request.auth.uid;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+      
+      match /recipes/{recipeId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidRecipe(request.resource.data);
+        allow update: if isOwner(userId) && isValidRecipe(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+      
+      match /pantry/{itemId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidPantryItem(request.resource.data);
+        allow update: if isOwner(userId) && isValidPantryItem(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+      
+      match /mealPlan/{planId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidMealPlan(request.resource.data);
+        allow update: if isOwner(userId) && isValidMealPlan(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+      
+      match /shoppingList/{itemId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidShoppingItem(request.resource.data);
+        allow update: if isOwner(userId) && isValidShoppingItem(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "FlavorAI",
+  "description": "A comprehensive AI-powered recipe recommender with ingredient scanning, meal planning, and smart pantry tracking.",
+  "requestFramePermissions": ["camera", "microphone"]
+}

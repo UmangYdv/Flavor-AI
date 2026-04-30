@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] }
+      },
+      "required": ["uid", "email"]
+    },
+    "Recipe": {
+      "title": "Recipe",
+      "description": "A saved recipe in the user's collection",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "ingredients": { "type": "array" },
+        "instructions": { "type": "array" },
+        "prepTime": { "type": "number" },
+        "calories": { "type": "number" },
+        "macros": { "type": "object" },
+        "mealType": { "type": "array" },
+        "isVeg": { "type": "boolean" },
+        "imageUrl": { "type": "string" },
+        "uid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "uid"]
+    },
+    "PantryItem": {
+      "title": "Pantry Item",
+      "description": "An item in the user's kitchen inventory",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "quantity": { "type": "string" },
+        "category": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "uid": { "type": "string" }
+      },
+      "required": ["name", "uid"]
+    },
+    "MealPlan": {
+      "title": "Meal Plan Entry",
+      "description": "A scheduled meal in the user's planner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "recipeId": { "type": "string" },
+        "recipeTitle": { "type": "string" },
+        "date": { "type": "string" },
+        "mealType": { "type": "string" },
+        "uid": { "type": "string" }
+      },
+      "required": ["recipeId", "date", "mealType", "uid"]
+    },
+    "ShoppingItem": {
+      "title": "Shopping List Item",
+      "description": "An item to buy",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "amount": { "type": "string" },
+        "isBought": { "type": "boolean" },
+        "uid": { "type": "string" }
+      },
+      "required": ["name", "uid"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/users/{userId}/recipes/{recipeId}": {
+      "schema": "Recipe",
+      "description": "User's saved recipes"
+    },
+    "/users/{userId}/pantry/{itemId}": {
+      "schema": "PantryItem",
+      "description": "User's pantry inventory"
+    },
+    "/users/{userId}/mealPlan/{planId}": {
+      "schema": "MealPlan",
+      "description": "User's meal planning entries"
+    },
+    "/users/{userId}/shoppingList/{itemId}": {
+      "schema": "ShoppingItem",
+      "description": "User's shopping list"
+    }
+  }
+}
