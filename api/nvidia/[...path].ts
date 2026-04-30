@@ -1,4 +1,18 @@
-import { applyCorsHeaders, handleCorsPreflight } from "../_lib/cors";
+function applyCorsHeaders(res: any) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
+function handleCorsPreflight(req: any, res: any) {
+  if (req.method !== "OPTIONS") {
+    return false;
+  }
+
+  applyCorsHeaders(res);
+  res.status(204).end();
+  return true;
+}
 
 export default async function handler(req: any, res: any) {
   if (handleCorsPreflight(req, res)) {
