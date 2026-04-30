@@ -72,6 +72,29 @@ function formatAppError(err: unknown): string {
   return String(err);
 }
 
+function IntroSplashPlaceholder() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-[#f4f3fb]">
+      <div className="relative h-36 w-36 overflow-hidden rounded-full bg-white shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <div
+          className="absolute inset-0 opacity-35"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(148,163,184,0.22) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.22) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative h-16 w-16">
+            <div className="absolute left-1/2 top-0 h-full w-4 -translate-x-1/2 rotate-45 rounded-full bg-sky-400" />
+            <div className="absolute left-1/2 top-0 h-full w-4 -translate-x-1/2 -rotate-45 rounded-full bg-sky-400" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // My Recipes Page
 const MyRecipes = ({
   favorites,
@@ -916,6 +939,7 @@ export default function App() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showIntro, setShowIntro] = useState(false);
   const [isMobileIntro, setIsMobileIntro] = useState(false);
+  const [isIntroVideoPlaying, setIsIntroVideoPlaying] = useState(false);
 
   // Lifted Home State
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -961,6 +985,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (showIntro) {
+      setIsIntroVideoPlaying(false);
+    }
+  }, [showIntro]);
+
+  useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
     const updateIntroSource = () => setIsMobileIntro(mediaQuery.matches);
 
@@ -974,6 +1004,7 @@ export default function App() {
 
   const hideIntro = () => {
     sessionStorage.setItem("flavorai_intro_shown", "true");
+    setIsIntroVideoPlaying(false);
     setShowIntro(false);
   };
 
@@ -1329,15 +1360,21 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 w-screen h-screen bg-black"
+            className="fixed inset-0 z-50 w-screen h-screen overflow-hidden bg-[#f4f3fb]"
           >
+            {!isIntroVideoPlaying && <IntroSplashPlaceholder />}
             <video
               src={isMobileIntro ? "/intro-mobile.mp4" : "/intro.mp4"}
               autoPlay
               muted
               playsInline
+              preload="auto"
+              onPlay={() => setIsIntroVideoPlaying(true)}
+              onWaiting={() => setIsIntroVideoPlaying(false)}
               onEnded={hideIntro}
-              className={`w-full h-full ${isMobileIntro ? "object-cover" : "object-contain"}`}
+              className={`h-full w-full transition-opacity duration-300 ${
+                isIntroVideoPlaying ? "opacity-100" : "opacity-0"
+              } ${isMobileIntro ? "object-cover" : "object-contain"}`}
             />
           </motion.div>
         )}
