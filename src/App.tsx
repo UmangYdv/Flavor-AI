@@ -940,6 +940,7 @@ export default function App() {
   const [showIntro, setShowIntro] = useState(false);
   const [isMobileIntro, setIsMobileIntro] = useState(false);
   const [isIntroVideoPlaying, setIsIntroVideoPlaying] = useState(false);
+  const introVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // Lifted Home State
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -989,6 +990,17 @@ export default function App() {
       setIsIntroVideoPlaying(false);
     }
   }, [showIntro]);
+
+  useEffect(() => {
+    if (!showIntro) return;
+
+    const video = introVideoRef.current;
+    if (!video) return;
+
+    void video.play().catch(() => {
+      // If autoplay is delayed/blocked, still reveal the first frame once loaded.
+    });
+  }, [showIntro, isMobileIntro]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -1364,13 +1376,15 @@ export default function App() {
           >
             {!isIntroVideoPlaying && <IntroSplashPlaceholder />}
             <video
+              ref={introVideoRef}
               src={isMobileIntro ? "/intro-mobile.mp4" : "/intro.mp4"}
               autoPlay
               muted
               playsInline
               preload="auto"
-              onPlay={() => setIsIntroVideoPlaying(true)}
-              onWaiting={() => setIsIntroVideoPlaying(false)}
+              onLoadedData={() => setIsIntroVideoPlaying(true)}
+              onCanPlay={() => setIsIntroVideoPlaying(true)}
+              onPlaying={() => setIsIntroVideoPlaying(true)}
               onEnded={hideIntro}
               className={`h-full w-full transition-opacity duration-300 ${
                 isIntroVideoPlaying ? "opacity-100" : "opacity-0"
