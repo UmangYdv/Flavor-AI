@@ -45,6 +45,7 @@ export default function CookingMode({
       );
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
       window.speechSynthesis.speak(utterance);
     },
     [recipe.instructions],
@@ -117,7 +118,7 @@ export default function CookingMode({
         } catch (e) {}
       }
     };
-  }, [recipe.instructions.length, speakStep, onClose]); // Removed currentStep from deps
+  }, [recipe.instructions.length, speakStep, onClose]);
 
   // Cleanup on unmount
   useEffect(() => {
