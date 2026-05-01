@@ -531,26 +531,13 @@ export default function RecipeDetails({
                   <label className="block text-sm font-bold text-stone-400 uppercase tracking-wider mb-2">
                     Select Date
                   </label>
-                  <button
-                    ref={calendarButtonRef}
-                    type="button"
-                    onClick={handleDatePickerClick}
-                    className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 border border-stone-200 bg-stone-100 text-left font-medium text-stone-700 cursor-pointer touch-manipulation"
-                  >
-                    {saveDate
-                      ? new Date(saveDate).toLocaleDateString(undefined, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })
-                      : "Select Date"}
-                  </button>
                   <input
                     ref={dateInputRef}
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    min={new Date().toISOString().split("T")[0]}
+                    className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 border border-stone-200 bg-stone-100 text-left font-medium text-stone-700 cursor-pointer touch-manipulation"
                   />
                 </div>
 
