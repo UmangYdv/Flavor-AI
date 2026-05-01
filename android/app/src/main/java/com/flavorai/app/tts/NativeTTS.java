@@ -87,7 +87,10 @@ public class NativeTTS extends Plugin {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "flavorai_utterance");
         } else {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH);
+            @SuppressWarnings("HashMapAs")
+            android.util.HashMap<String, String> params = new android.util.HashMap<>();
+            params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "flavorai_utterance");
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, params);
         }
         
         JSObject result = new JSObject();
