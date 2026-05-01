@@ -525,8 +525,8 @@ const MealPlan = ({
                 type="button"
                 onClick={() => {
                   const input = trackerDateInputRef.current;
-                  if (input && input.showPicker) {
-                    input.showPicker();
+                  if (input) {
+                    input.click();
                   }
                 }}
                 className="flex items-center gap-2 text-sm font-bold text-white outline-none cursor-pointer touch-manipulation"
@@ -546,7 +546,8 @@ const MealPlan = ({
                 type="date"
                 value={trackerDate}
                 onChange={handleDateChange}
-                className="sr-only"
+                className="fixed opacity-0 pointer-events-auto w-px h-px"
+                tabIndex={-1}
               />
             </div>
           </div>

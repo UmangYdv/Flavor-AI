@@ -183,22 +183,13 @@ export default function RecipeDetails({
 
   // Add a ref to the button to calculate its position
   const calendarButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
 
   const handleDatePickerClick = () => {
     const input = document.getElementById(
       "mobile-date-picker",
     ) as HTMLInputElement;
-    if (input && input.showPicker) {
-      input.showPicker();
-    }
-
-    if (calendarButtonRef.current) {
-      const rect = calendarButtonRef.current.getBoundingClientRect();
-      setCalendarPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      });
+    if (input) {
+      input.click();
     }
   };
 
@@ -547,13 +538,8 @@ export default function RecipeDetails({
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
-                    className="hidden"
+                    className="fixed opacity-0 pointer-events-auto w-px h-px"
                     tabIndex={-1}
-                    style={{
-                      position: "absolute",
-                      top: `${calendarPosition.top}px`,
-                      left: `${calendarPosition.left}px`,
-                    }}
                   />
                 </div>
 
