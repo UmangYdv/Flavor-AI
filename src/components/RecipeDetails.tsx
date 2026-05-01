@@ -504,19 +504,21 @@ export default function RecipeDetails({
                   <label className="block text-sm font-bold text-stone-400 uppercase tracking-wider mb-2">
                     Select Date
                   </label>
+                  <button
+                    type="button"
+                    className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 border border-stone-200 bg-stone-100 text-left font-medium text-stone-700"
+                    onClick={() => document.getElementById('mobile-date-picker')?.click()}
+                    aria-label="Select date"
+                  >
+                    {saveDate ? new Date(saveDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Select Date'}
+                  </button>
                   <input
+                    id="mobile-date-picker"
                     type="date"
                     value={saveDate}
-                    onChange={(e) => setSaveDate(e.target.value)}
-                    className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500"
-                    style={{
-                      WebkitAppearance: 'auto',
-                      appearance: 'auto',
-                      background: 'transparent',
-                      border: '1px solid #e5e7eb',
-                      pointerEvents: 'auto',
-                    }}
-                    inputMode="none"
+                    onChange={e => setSaveDate(e.target.value)}
+                    className="hidden"
+                    tabIndex={-1}
                   />
                 </div>
 
