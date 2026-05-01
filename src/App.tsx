@@ -400,37 +400,20 @@ const MealPlan = ({
     {} as Record<string, MealPlanEntry[]>,
   );
 
-  // Generate 7-day week starting from today or from first plan date
+  // Always generate 7-day week starting from current week (Monday to Sunday)
   const getWeekDates = () => {
     const dates: string[] = [];
-    let startDate: Date;
+    const today = new Date();
+    // Get Monday of current week
+    const dayOfWeek = today.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() + mondayOffset);
 
-    if (plans.length > 0) {
-      const validDates = plans
-        .map((p) => new Date(p.date))
-        .filter((d) => !Number.isNaN(d.getTime()));
-      if (validDates.length > 0) {
-        const firstPlanDate = new Date(
-          Math.min(...validDates.map((d) => d.getTime())),
-        );
-        firstPlanDate.setDate(
-          firstPlanDate.getDate() - firstPlanDate.getDay() + 1,
-        );
-        startDate = firstPlanDate;
-      } else {
-        startDate = new Date();
-        startDate.setDate(startDate.getDate() - startDate.getDay() + 1);
-      }
-    } else {
-      // Start from today
-      startDate = new Date();
-      startDate.setDate(startDate.getDate() - startDate.getDay() + 1); // Move to Monday
-    }
-
-    // Generate 7 consecutive dates
+    // Generate 7 consecutive dates starting from Monday
     for (let i = 0; i < 7; i++) {
       const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
+      date.setDate(startDate.getDate() + i);
       dates.push(date.toLocaleDateString("en-CA"));
     }
 
@@ -534,15 +517,12 @@ const MealPlan = ({
                 type="button"
                 onClick={() => {
                   const input = trackerDateInputRef.current;
-                  if (!input) return;
-                  const showPicker = (input as any).showPicker;
-                  if (typeof showPicker === "function") {
-                    showPicker.call(input);
-                  } else {
-                    input.focus();
+                  if (input) {
+                    input.showPicker?.() || input.click();
                   }
                 }}
-                className="flex items-center gap-2 text-sm font-bold text-white outline-none"
+                className="flex items-center gap-2 text-sm font-bold text-white outline-none cursor-pointer touch-manipulation"
+                aria-label="Select date"
               >
                 <Calendar size={16} className="text-stone-400" />
                 <span>
