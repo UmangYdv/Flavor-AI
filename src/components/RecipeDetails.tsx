@@ -224,25 +224,31 @@ export default function RecipeDetails({
 
           <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
             <button
+              type="button"
               onClick={onClose}
-              className="bg-white/90 backdrop-blur-md p-3 rounded-2xl text-stone-600 hover:bg-white transition-all shadow-lg"
+              className="bg-white/90 backdrop-blur-md p-3 rounded-2xl text-stone-600 hover:bg-white transition-all shadow-lg cursor-pointer touch-manipulation"
+              aria-label="Close recipe details"
             >
               <X size={20} />
             </button>
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={() => setShowSaveModal(true)}
-                className="bg-white/90 backdrop-blur-md p-3 rounded-2xl text-stone-600 hover:bg-white transition-all shadow-lg flex items-center gap-2"
+                className="bg-white/90 backdrop-blur-md p-3 rounded-2xl text-stone-600 hover:bg-white transition-all shadow-lg flex items-center gap-2 cursor-pointer touch-manipulation"
+                aria-label="Add to meal plan"
               >
                 <Calendar size={20} className="text-orange-500" />
                 <span className="text-sm font-bold text-stone-900">Plan</span>
               </button>
               <button
+                type="button"
                 onClick={onFavorite}
                 className={cn(
-                  "bg-white/90 backdrop-blur-md p-3 rounded-2xl transition-all shadow-lg",
+                  "bg-white/90 backdrop-blur-md p-3 rounded-2xl transition-all shadow-lg cursor-pointer touch-manipulation",
                   isFavorite ? "bg-red-500 text-white" : "hover:bg-white",
                 )}
+                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
               >
                 <Heart
                   size={20}
@@ -530,15 +536,17 @@ export default function RecipeDetails({
 
                 <div className="flex gap-3 pt-4">
                   <button
+                    type="button"
                     onClick={() => setShowSaveModal(false)}
-                    className="flex-1 py-3 rounded-xl font-bold text-stone-400 hover:bg-stone-100 transition-colors"
+                    className="flex-1 py-3 rounded-xl font-bold text-stone-400 hover:bg-stone-100 transition-colors cursor-pointer touch-manipulation"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={handlePlanSave}
                     disabled={isSaving}
-                    className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer touch-manipulation"
                   >
                     {isSaving ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

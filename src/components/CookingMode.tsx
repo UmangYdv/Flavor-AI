@@ -193,15 +193,17 @@ export default function CookingMode({
         <div className="flex items-center gap-3">
           <div className="flex flex-col items-end">
             <button
+              type="button"
               onClick={toggleListening}
               disabled={!!voiceError && voiceError.includes("not supported")}
               className={cn(
-                "p-4 rounded-2xl transition-all flex items-center gap-2 font-bold",
+                "p-4 rounded-2xl transition-all flex items-center gap-2 font-bold cursor-pointer touch-manipulation",
                 isListening
                   ? "bg-red-500 text-white animate-pulse"
                   : "bg-stone-800 text-stone-400 hover:bg-stone-700",
                 voiceError && "border-2 border-red-500/50",
               )}
+              aria-label={isListening ? "Stop voice control" : "Start voice control"}
             >
               {isListening ? <Mic size={24} /> : <MicOff size={24} />}
               <span className="hidden md:inline">
@@ -215,8 +217,10 @@ export default function CookingMode({
             )}
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-4 bg-stone-800 text-stone-400 rounded-2xl hover:bg-stone-700 transition-all"
+            className="p-4 bg-stone-800 text-stone-400 rounded-2xl hover:bg-stone-700 transition-all cursor-pointer touch-manipulation"
+            aria-label="Close cooking mode"
           >
             <X size={24} />
           </button>
@@ -240,8 +244,10 @@ export default function CookingMode({
 
           <div className="flex items-center justify-center gap-6">
             <button
+              type="button"
               onClick={() => speakStep(currentStep)}
-              className="bg-stone-800 text-white p-6 rounded-3xl hover:bg-stone-700 transition-all"
+              className="bg-stone-800 text-white p-6 rounded-3xl hover:bg-stone-700 transition-all cursor-pointer touch-manipulation"
+              aria-label={isSpeaking ? "Stop reading step" : "Read step aloud"}
             >
               {isSpeaking ? (
                 <Volume2 size={40} className="text-orange-500" />
@@ -257,9 +263,10 @@ export default function CookingMode({
       <div className="p-10 border-t border-stone-800 bg-stone-900/50 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-6">
           <button
+            type="button"
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className="flex-1 flex items-center justify-center gap-3 bg-stone-800 text-white py-6 rounded-[2rem] font-bold text-xl disabled:opacity-30 hover:bg-stone-700 transition-all"
+            className="flex-1 flex items-center justify-center gap-3 bg-stone-800 text-white py-6 rounded-[2rem] font-bold text-xl disabled:opacity-30 hover:bg-stone-700 transition-all cursor-pointer touch-manipulation"
           >
             <ChevronLeft size={32} />
             Previous
@@ -267,16 +274,18 @@ export default function CookingMode({
 
           {currentStep === recipe.instructions.length - 1 ? (
             <button
+              type="button"
               onClick={onFinish}
-              className="flex-[2] flex items-center justify-center gap-3 bg-green-500 text-white py-6 rounded-[2rem] font-bold text-2xl shadow-2xl shadow-green-500/20 hover:bg-green-600 transition-all"
+              className="flex-[2] flex items-center justify-center gap-3 bg-green-500 text-white py-6 rounded-[2rem] font-bold text-2xl shadow-2xl shadow-green-500/20 hover:bg-green-600 transition-all cursor-pointer touch-manipulation"
             >
               <CheckCircle2 size={32} />
               Finish Cooking
             </button>
           ) : (
             <button
+              type="button"
               onClick={handleNext}
-              className="flex-[2] flex items-center justify-center gap-3 bg-orange-500 text-white py-6 rounded-[2rem] font-bold text-2xl shadow-2xl shadow-orange-500/20 hover:bg-orange-600 transition-all"
+              className="flex-[2] flex items-center justify-center gap-3 bg-orange-500 text-white py-6 rounded-[2rem] font-bold text-2xl shadow-2xl shadow-orange-500/20 hover:bg-orange-600 transition-all cursor-pointer touch-manipulation"
             >
               Next Step
               <ChevronRight size={32} />
