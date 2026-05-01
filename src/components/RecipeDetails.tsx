@@ -508,7 +508,15 @@ export default function RecipeDetails({
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
-                    className="w-full bg-stone-100 border-none rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500"
+                    style={{
+                      WebkitAppearance: 'auto',
+                      appearance: 'auto',
+                      background: 'transparent',
+                      border: '1px solid #e5e7eb',
+                      pointerEvents: 'auto',
+                    }}
+                    inputMode="none"
                   />
                 </div>
 
