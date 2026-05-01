@@ -524,11 +524,15 @@ const MealPlan = ({
               <button
                 type="button"
                 onClick={() => {
-                  const input = trackerDateInputRef.current;
-                  if (input && input.showPicker) {
-                    input.showPicker();
-                  }
-                }}
+                    const input = trackerDateInputRef.current;
+                    if (!input) return;
+
+                    if (typeof (input as any).showPicker === "function") {
+                    (input as any).showPicker();
+                    } else {
+                    input.click(); // iOS fix
+                          }
+                  }}
                 className="flex items-center gap-2 text-sm font-bold text-white outline-none cursor-pointer touch-manipulation"
                 aria-label="Select date"
               >
@@ -546,7 +550,7 @@ const MealPlan = ({
                 type="date"
                 value={trackerDate}
                 onChange={handleDateChange}
-                className="sr-only"
+                className="absolute opacity-0 w-0 h-0"
               />
             </div>
           </div>

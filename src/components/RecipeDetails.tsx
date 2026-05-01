@@ -189,9 +189,14 @@ export default function RecipeDetails({
     const input = document.getElementById(
       "mobile-date-picker",
     ) as HTMLInputElement;
-    if (input && input.showPicker) {
-      input.showPicker();
-    }
+    if (!input) return;
+
+    if (typeof (input as any).showPicker === "function") {
+        (input as any).showPicker();
+        } else {
+        input.focus();
+        input.click(); // iOS fix
+      }
 
     if (calendarButtonRef.current) {
       const rect = calendarButtonRef.current.getBoundingClientRect();
@@ -547,7 +552,7 @@ export default function RecipeDetails({
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
-                    className="hidden"
+                    className="absolute opacity-0 w-0 h-0"
                     tabIndex={-1}
                     style={{
                       position: "absolute",
