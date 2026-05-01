@@ -183,12 +183,11 @@ export default function RecipeDetails({
 
   // Add a ref to the button to calculate its position
   const calendarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
 
   const handleDatePickerClick = () => {
-    const input = document.getElementById(
-      "mobile-date-picker",
-    ) as HTMLInputElement;
+    const input = dateInputRef.current;
     if (!input) return;
 
     if (typeof (input as any).showPicker === "function") {
@@ -548,12 +547,12 @@ export default function RecipeDetails({
                       : "Select Date"}
                   </button>
                   <input
+                    ref={dateInputRef}
                     id="mobile-date-picker"
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
                     className="absolute opacity-0 w-0 h-0"
-                    tabIndex={-1}
                     style={{
                       position: "absolute",
                       top: `${calendarPosition.top}px`,
