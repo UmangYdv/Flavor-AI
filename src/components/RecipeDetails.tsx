@@ -527,7 +527,7 @@ export default function RecipeDetails({
               </h3>
 
               <div className="space-y-6">
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-bold text-stone-400 uppercase tracking-wider mb-2">
                     Select Date
                   </label>
@@ -535,8 +535,7 @@ export default function RecipeDetails({
                     ref={calendarButtonRef}
                     type="button"
                     className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 border border-stone-200 bg-stone-100 text-left font-medium text-stone-700 cursor-pointer touch-manipulation"
-                    onClick={handleDatePickerClick}
-                    aria-label="Select date"
+                    
                   >
                     {saveDate
                       ? new Date(saveDate).toLocaleDateString(undefined, {
@@ -547,17 +546,10 @@ export default function RecipeDetails({
                       : "Select Date"}
                   </button>
                   <input
-                    ref={dateInputRef}
-                    id="mobile-date-picker"
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
-                    className="absolute opacity-0 w-0 h-0"
-                    style={{
-                      position: "absolute",
-                      top: `${calendarPosition.top}px`,
-                      left: `${calendarPosition.left}px`,
-                    }}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                   />
                 </div>
 
