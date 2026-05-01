@@ -328,6 +328,9 @@ const MealPlan = ({
   const [trackerDate, setTrackerDate] = useState(
     new Date().toLocaleDateString("en-CA"),
   );
+  const [sortedDates, setSortedDates] = useState<string[]>(() => 
+    getWeekDates(new Date())
+  );
   const [actionError, setActionError] = useState<string | null>(null);
   const trackerDateInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -400,27 +403,31 @@ const MealPlan = ({
     {} as Record<string, MealPlanEntry[]>,
   );
 
-  // Always generate 7-day week starting from current week (Monday to Sunday)
-  const getWeekDates = () => {
+  // Update the getWeekDates function to accept a custom date
+  const getWeekDates = (startDate: Date) => {
     const dates: string[] = [];
-    const today = new Date();
-    // Get Monday of current week
-    const dayOfWeek = today.getDay();
+    // Get Monday of the week containing the startDate
+    const dayOfWeek = startDate.getDay();
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() + mondayOffset);
+    const monday = new Date(startDate);
+    monday.setDate(startDate.getDate() + mondayOffset);
 
     // Generate 7 consecutive dates starting from Monday
     for (let i = 0; i < 7; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
       dates.push(date.toLocaleDateString("en-CA"));
     }
 
     return dates;
   };
 
-  const sortedDates = getWeekDates();
+  // Update the trackerDate onChange to update the week plan
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(e.target.value);
+    setTrackerDate(e.target.value);
+    setSortedDates(getWeekDates(newDate));
+  };
 
   // Calculate Daily Totals for Nutritional Tracking
   const selectedMeals = groupedPlans[trackerDate] || [];
@@ -517,8 +524,8 @@ const MealPlan = ({
                 type="button"
                 onClick={() => {
                   const input = trackerDateInputRef.current;
-                  if (input) {
-                    input.showPicker?.() || input.click();
+                  if (input && input.showPicker) {
+                    input.showPicker();
                   }
                 }}
                 className="flex items-center gap-2 text-sm font-bold text-white outline-none cursor-pointer touch-manipulation"
@@ -537,7 +544,7 @@ const MealPlan = ({
                 ref={trackerDateInputRef}
                 type="date"
                 value={trackerDate}
-                onChange={(e) => setTrackerDate(e.target.value)}
+                onChange={handleDateChange}
                 className="sr-only"
               />
             </div>

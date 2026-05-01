@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   X,
   Clock,
@@ -181,6 +181,27 @@ export default function RecipeDetails({
   const showPlaceholder = imageError || !(recipe.image || recipe.imageUrl);
   const imageSrc = !showPlaceholder ? recipe.image || recipe.imageUrl : null;
 
+  // Add a ref to the button to calculate its position
+  const calendarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
+
+  const handleDatePickerClick = () => {
+    const input = document.getElementById(
+      "mobile-date-picker",
+    ) as HTMLInputElement;
+    if (input && input.showPicker) {
+      input.showPicker();
+    }
+
+    if (calendarButtonRef.current) {
+      const rect = calendarButtonRef.current.getBoundingClientRect();
+      setCalendarPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -248,7 +269,9 @@ export default function RecipeDetails({
                   "bg-white/90 backdrop-blur-md p-3 rounded-2xl transition-all shadow-lg cursor-pointer touch-manipulation",
                   isFavorite ? "bg-red-500 text-white" : "hover:bg-white",
                 )}
-                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                aria-label={
+                  isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
               >
                 <Heart
                   size={20}
@@ -505,25 +528,32 @@ export default function RecipeDetails({
                     Select Date
                   </label>
                   <button
+                    ref={calendarButtonRef}
                     type="button"
                     className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 border border-stone-200 bg-stone-100 text-left font-medium text-stone-700 cursor-pointer touch-manipulation"
-                    onClick={() => {
-                      const input = document.getElementById('mobile-date-picker') as HTMLInputElement;
-                      if (input) {
-                        input.showPicker?.() || input.click();
-                      }
-                    }}
+                    onClick={handleDatePickerClick}
                     aria-label="Select date"
                   >
-                    {saveDate ? new Date(saveDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Select Date'}
+                    {saveDate
+                      ? new Date(saveDate).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "Select Date"}
                   </button>
                   <input
                     id="mobile-date-picker"
                     type="date"
                     value={saveDate}
-                    onChange={e => setSaveDate(e.target.value)}
+                    onChange={(e) => setSaveDate(e.target.value)}
                     className="hidden"
                     tabIndex={-1}
+                    style={{
+                      position: "absolute",
+                      top: `${calendarPosition.top}px`,
+                      left: `${calendarPosition.left}px`,
+                    }}
                   />
                 </div>
 
