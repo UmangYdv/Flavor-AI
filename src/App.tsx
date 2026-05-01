@@ -328,11 +328,31 @@ const MealPlan = ({
   const [trackerDate, setTrackerDate] = useState(
     new Date().toLocaleDateString("en-CA"),
   );
+  const [actionError, setActionError] = useState<string | null>(null);
+  const trackerDateInputRef = useRef<HTMLInputElement | null>(null);
+
+  // getWeekDates function must be defined before it's used in useState
+  const getWeekDates = (startDate: Date) => {
+    const dates: string[] = [];
+    // Get Monday of the week containing the startDate
+    const dayOfWeek = startDate.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const monday = new Date(startDate);
+    monday.setDate(startDate.getDate() + mondayOffset);
+
+    // Generate 7 consecutive dates starting from Monday
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      dates.push(date.toLocaleDateString("en-CA"));
+    }
+
+    return dates;
+  };
+
   const [sortedDates, setSortedDates] = useState<string[]>(() => 
     getWeekDates(new Date())
   );
-  const [actionError, setActionError] = useState<string | null>(null);
-  const trackerDateInputRef = useRef<HTMLInputElement | null>(null);
 
   const removePlan = async (id: string) => {
     if (!user) return;
@@ -402,25 +422,6 @@ const MealPlan = ({
     },
     {} as Record<string, MealPlanEntry[]>,
   );
-
-  // Update the getWeekDates function to accept a custom date
-  const getWeekDates = (startDate: Date) => {
-    const dates: string[] = [];
-    // Get Monday of the week containing the startDate
-    const dayOfWeek = startDate.getDay();
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const monday = new Date(startDate);
-    monday.setDate(startDate.getDate() + mondayOffset);
-
-    // Generate 7 consecutive dates starting from Monday
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
-      dates.push(date.toLocaleDateString("en-CA"));
-    }
-
-    return dates;
-  };
 
   // Update the trackerDate onChange to update the week plan
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
