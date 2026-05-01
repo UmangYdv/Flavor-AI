@@ -191,11 +191,11 @@ export default function RecipeDetails({
     if (!input) return;
 
     if (typeof (input as any).showPicker === "function") {
-        (input as any).showPicker();
-        } else {
-        input.focus();
-        input.click(); // iOS fix
-      }
+      (input as any).showPicker();
+    } else {
+      input.focus();
+      input.click(); // iOS fix
+    }
 
     if (calendarButtonRef.current) {
       const rect = calendarButtonRef.current.getBoundingClientRect();
@@ -534,8 +534,8 @@ export default function RecipeDetails({
                   <button
                     ref={calendarButtonRef}
                     type="button"
+                    onClick={handleDatePickerClick}
                     className="w-full rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 border border-stone-200 bg-stone-100 text-left font-medium text-stone-700 cursor-pointer touch-manipulation"
-                    
                   >
                     {saveDate
                       ? new Date(saveDate).toLocaleDateString(undefined, {
@@ -546,6 +546,7 @@ export default function RecipeDetails({
                       : "Select Date"}
                   </button>
                   <input
+                    ref={dateInputRef}
                     type="date"
                     value={saveDate}
                     onChange={(e) => setSaveDate(e.target.value)}
