@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import { Capacitor } from "@capacitor/core";
 import {
   BookOpen,
   Package,
@@ -982,11 +981,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    // Skip intro video on Android APK (Capacitor native platform)
-    const isNativePlatform = Capacitor.isNativePlatform();
-    if (isNativePlatform) {
-      sessionStorage.setItem("flavorai_intro_shown", "true");
-    }
     const seenIntro = sessionStorage.getItem("flavorai_intro_shown");
     setShowIntro(!seenIntro);
   }, []);
