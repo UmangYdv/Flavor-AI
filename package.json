@@ -11,6 +11,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@cap-js-community/event-queue": "^2.1.0",
     "@capacitor/android": "^8.3.1",
     "@capacitor/app": "^7.1.2",
     "@capacitor/browser": "^7.0.5",

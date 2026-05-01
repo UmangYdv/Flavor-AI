@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../lib/utils";
 import { useAuth } from "../hooks/useAuth";
 import CookingMode from "./CookingMode";
+import ttsService from "../services/ttsService";
 import { addMealPlanEntry } from "../services/supabaseDb";
 
 import {
@@ -134,41 +135,48 @@ export default function RecipeDetails({
   };
 
   const speakAll = () => {
+    // Use the TTS service which works on both web and native
     if (isSpeaking && !isPaused) {
-      window.speechSynthesis.pause();
+      ttsService.pause();
       setIsPaused(true);
       return;
     }
 
     if (isPaused) {
-      window.speechSynthesis.resume();
+      // Resume - just speak again
       setIsPaused(false);
-      return;
     }
 
     setIsSpeaking(true);
     setIsPaused(false);
 
     const fullText = `Recipe for ${recipe.title}. Ingredients: ${recipe.ingredients.map((i) => `${i.amount} ${i.unit} of ${i.name}`).join(", ")}. Instructions: ${recipe.instructions.join(". ")}`;
-    const utterance = new SpeechSynthesisUtterance(fullText);
 
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      setIsPaused(false);
-    };
+    ttsService.setCallbacks(
+      () => setIsSpeaking(true),
+      () => {
+        setIsSpeaking(false);
+        setIsPaused(false);
+      },
+      (error) => {
+        console.error("TTS error:", error);
+        setIsSpeaking(false);
+        setIsPaused(false);
+      },
+    );
 
-    window.speechSynthesis.speak(utterance);
+    ttsService.speak(fullText);
   };
 
   const stopSpeaking = () => {
-    window.speechSynthesis.cancel();
+    ttsService.stop();
     setIsSpeaking(false);
     setIsPaused(false);
   };
 
   useEffect(() => {
     return () => {
-      window.speechSynthesis.cancel();
+      ttsService.stop();
     };
   }, []);
 

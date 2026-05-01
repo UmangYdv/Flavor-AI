@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Recipe } from "../types";
 import { cn } from "../lib/utils";
+import ttsService from "../services/ttsService";
 
 interface CookingModeProps {
   recipe: Recipe;
@@ -37,16 +38,23 @@ export default function CookingMode({
     stepRef.current = currentStep;
   }, [currentStep]);
 
+  // Initialize TTS service
+  useEffect(() => {
+    ttsService.initialize();
+    ttsService.setCallbacks(
+      () => setIsSpeaking(true),
+      () => setIsSpeaking(false),
+      (error) => {
+        console.error("TTS error:", error);
+        setIsSpeaking(false);
+      },
+    );
+  }, []);
+
   const speakStep = useCallback(
     (index: number) => {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(
-        recipe.instructions[index],
-      );
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(utterance);
+      // Use the TTS service which works on both web and native
+      ttsService.speak(recipe.instructions[index]);
     },
     [recipe.instructions],
   );
